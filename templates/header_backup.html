@@ -1,0 +1,105 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+
+    <!-- 导航栏商标 -->
+    <a class="navbar-brand" href="#"><i class="fa-solid fa-blog"></i>&nbsp;宝林的博客</a>
+
+    <!-- 导航入口 -->
+    <div>
+      <ul class="navbar-nav">
+        <!-- 条目 -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'article:article_list' %}">首页</a>
+        </li>
+        <!--        文章按标签分类检索-->
+        <li class="btn-group">
+          <a role="button" class="nav-link dropdown-toggle" data-toggle="dropdown">文章分类
+              <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+              <a class="dropdown-item" href="{% url 'article:article_list' %}?column=1">
+                <i class="fa-solid fa-graduation-cap" style="color: blue;"></i> &nbsp;高数学习心得</a>
+              <a class="dropdown-item" href="#">
+                <i class="fa-solid fa-atom" style="color: blue;"></i> &nbsp;通信学习心得</a>
+              <a class="dropdown-item" href="#">
+                <i class="fa-brands fa-python" style="color: blue;"></i> &nbsp;编程项目实战</a>
+              <a class="dropdown-item" href="#">
+                <i class="fa-solid fa-book-open" style="color: blue;"></i> &nbsp;读书随想</a>
+          </ul>
+        </li>
+        <!-- Django的 if 模板语句 -->
+        {% if user.is_authenticated %}
+        <!-- 引入notifications的模板标签 -->
+        {% load notifications_tags %}
+        {% notifications_unread as unread_count %}
+        <!-- 如果用户已经登录，则显示用户名下拉框 -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <!-- 新增代码，小红点 -->
+            {% if unread_count %}
+                <svg viewBox="0 0 8 8"
+                     width="8px"
+                     height="8px">
+                    <circle cx="4"
+                            cy="4"
+                            r="4"
+                            fill="#ff6b6b"
+                            ></circle>
+                </svg>
+            {% endif %}
+
+            {{ user.username }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'notice:list' %}">通知
+            {% if unread_count %}
+            <span class="badge badge-danger">{{ unread_count }}</span>
+            {% endif %}
+            </a>
+            <a class="dropdown-item" href="{% url 'article:article_create' %}">
+             <i class="fas fa-pen-clip" style="color: blue;"></i>&nbsp;&nbsp;写文章
+            </a>
+            <a class="dropdown-item" href='{% url "userprofile:edit" user.id %}'>
+              <i class="fas fa-user" style="color: blue;"></i>&nbsp;&nbsp;个人信息</a>
+            <a class="dropdown-item" href="#" onclick="user_delete()">
+              <i class="fas fa-user-minus" style="color: blue;"></i>&nbsp;&nbsp;删除用户</a>
+
+            <a class="dropdown-item" href="{% url 'userprofile:logout' %}">
+              <i class="fas fa-arrow-right-to-bracket" style="color: blue;"></i>&nbsp;&nbsp;退出登录</a>
+          </div>
+        </li>
+        <!-- 如果用户未登录，则显示 “登录” -->
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'userprofile:login' %}">登录</a>
+          </li>
+          <!-- if 语句在这里结束 -->
+          {% endif %}
+          {% if user.is_authenticated %}
+            <form
+              style="display:none;"
+              id="user_delete"
+              action="{% url 'userprofile:delete' user.id %}"
+              method="POST"
+            >
+            {% csrf_token %}
+              <button type="submit">发送</button>
+            </form>
+        <script>
+            function user_delete() {
+                // 调用layer弹窗组件
+                layer.open({
+                    title: "确认删除",
+                    content: "确认删除用户资料吗？",
+                    yes: function(index, layero) {
+                        $('form#user_delete button').click();
+                        layer.close(index);
+                    },
+                })
+            }
+        </script>
+      {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

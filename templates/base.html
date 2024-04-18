@@ -1,0 +1,74 @@
+{% load staticfiles %}
+
+<!--DOCTYPE html-->
+<!-- 网站主语言 -->
+<html lang="zh-cn">
+
+<head>
+    <!-- 网站采用的字符编码 -->
+    <meta charset="utf-8">
+    <!-- 预留网站标题的位置 -->
+    <title>{% block title %}{% endblock %}</title>
+    <!-- 引入bootstrap的css文件 -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'md_css/monokai.css' %}">
+<!--    <link rel="stylesheet" href="{% static 'adaptive/CSS/adaptive.css' %}">-->
+</head>
+
+<body>
+    <!-- 引入导航栏 -->
+    {% include 'header.html' %}
+    <!-- 预留具体页面的位置 -->
+    <div id="wrapper">
+        {% block content %}{% endblock content %}
+        <div id="push"></div>
+    </div>
+    <!-- 引入注脚 -->
+    {% include 'footer.html' %}
+    <!-- bootstrap.js 依赖 jquery.js 和popper.js，因此在这里引入 -->
+    <script src="{% static 'jquery/jquery-3.6.0.js' %}"></script>
+
+
+    <!--
+        popper.js 采用 cdn 远程引入，意思是你不需要把它下载到本地。
+        在实际的开发中推荐静态文件尽量都使用 cdn 的形式。
+        教程采用本地引入是为了让读者了解静态文件本地部署的流程。
+    -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>-->
+    <!-- Development version -->
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <!-- 引入bootstrap的js文件 -->
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- 引入layer.js-->
+    <script src="https://www.layuicdn.com/layui-v2.6.7/layui.js"></script>
+<!--    <script src="{% static 'adaptive/JS/adaptive.js"></script>-->
+    <!--    引入矢量图标-->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"
+    >
+<!--    # 用于拼接js代码块，依赖jquery，所以放到jquery的引用后面，这种办法可以规定js代码的运行顺序，带这个标签的都会在jquery之后运行-->
+    {% block script %} {% endblock script %}
+
+    {% include 'back_to_top_func.html' %}
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #wrapper {
+            min-height: 100%;
+            margin-bottom: -60px;
+        }
+
+        #footer,
+        #push {
+            height: 60px;
+        }
+    </style>
+
+</body>
+
+</html>
